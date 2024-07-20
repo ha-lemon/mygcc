@@ -7,6 +7,7 @@
 #include "define.h"
 #include "genIR.h"
 #include "DeleteDeadCode.h"
+#include "DAGopt.h"
 #include "opt.h"
 #include <fstream>
 #include <iostream>
@@ -77,6 +78,7 @@ int main(int argc, char **argv) {
     Opt.push_back(new SimplifyJump(m.get()));
     Opt.push_back(new LoopInvariant(m.get()));
     Opt.push_back(new SimplifyJump(m.get()));
+    Opt.push_back(new DAGopt(m.get()));
     for (auto x : Opt)
       x->execute();
   }
