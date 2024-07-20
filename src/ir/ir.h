@@ -361,6 +361,8 @@ public:
   BasicBlock *idom_;
   std::set<Value *> live_in;
   std::set<Value *> live_out;
+  std::set<Value *> use_b;
+  std::set<Value *> def_b;
 };
 
 //-----------------------------------------------Instruction-----------------------------------------------
@@ -447,7 +449,7 @@ public:
       operands_[i]->remove_use(use_pos_[i]);
     }
   }
-  // 删除phi指令中的一对操作数
+  // 删除phi指令中的操作数[index1, 到index2]
   void remove_operands(int index1, int index2) {
     for (int i = index1; i <= index2; i++) {
       operands_[i]->remove_use(use_pos_[i]);

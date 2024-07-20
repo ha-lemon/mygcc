@@ -1,6 +1,6 @@
 #include "DeleteDeadCode.h"
 #include "ConstSpread.h"
-
+/*对内存有操作的一系列函数？？？？？？*/
 std::set<std::string> OptFunc = {"getint",          "getfloat",
                                  "getch",           "getarray",
                                  "getfarray",       "putint",
@@ -29,7 +29,7 @@ void DeadCodeDeletion::Init(Function *foo) {    //往storePos，OptFunc存入了
   for (auto bb : foo->basic_blocks_) {
     for (auto ins : bb->instr_list_) {
       if (ins->op_id_ == Instruction::GetElementPtr) {
-      } else if (ins->op_id_ == Instruction::Store) {      //store指令的操作数1是ptr
+      } else if (ins->op_id_ == Instruction::Store) {      //store指令的操作数1是指针类型
         if (!storePos.count(ins->get_operand(1))) {        
           storePos.insert({ins->get_operand(1), {}});
         }
@@ -105,7 +105,7 @@ void DeadCodeDeletion::findInstr(Function *foo) {
     if (ins->op_id_ == Instruction::PHI) {
       for (int i = 1; i < ins->operands_.size(); i += 2) {
         auto bb = dynamic_cast<BasicBlock *>(ins->get_operand(i));
-        auto br = bb->get_terminator();   //获得终结处的指令
+        auto br = bb->get_terminator();   //获得终结处的指令    b1,b2  ---->   PHI指令
         if (uselessInstr.insert(br).second) {
           workList.push_back(br);
         }
@@ -169,7 +169,7 @@ void DeadCodeDeletion::deleteInstr(Function *foo) {
             ins->use_pos_.resize(1);
             ins->set_operand(0, temp);
             bb->add_succ_basic_block(temp);
-            temp->add_pre_basic_block(bb);
+            temp->add_pre_basic_block(bb);   //条件跳转指令变为直接跳转指令
           }
         }
       }

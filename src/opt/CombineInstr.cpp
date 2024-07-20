@@ -14,15 +14,17 @@ void CombineInstr::checkBlock(BasicBlock *bb) {
     change = false;
     for (auto instr : bb->instr_list_) {
       if (instr->op_id_ != Instruction::Add &&
-          instr->op_id_ != Instruction::Sub)
+          instr->op_id_ != Instruction::Sub)    //只对加法和减法？？
         continue;
-      if (instr->use_list_.size() != 1 || instr->use_list_.back().arg_no_ != 0)
+      if (instr->use_list_.size() != 1 || instr->use_list_.back().arg_no_ != 0)  //需要引用为1且为第0操作数
         continue;
+      /*instr被引为1，且处于第0操作数；nextInstr引用了instr,且为加或减类型*/
       Instruction *nextInstr =
           dynamic_cast<Instruction *>(instr->use_list_.back().val_);
       if (nextInstr == nullptr || instr->op_id_ != nextInstr->op_id_ ||
           instr->parent_ != nextInstr->parent_)
         continue;
+      /*值对应int的map*/
       std::unordered_map<Value *, unsigned int> Optime;
       Instruction *StartInstr = instr, *EndInstr = nullptr;
       Instruction *invalidStart = nullptr, *invalidEnd = nullptr; // 无效指令
