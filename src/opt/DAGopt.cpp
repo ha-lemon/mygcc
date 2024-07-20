@@ -22,7 +22,9 @@ void DAGopt::DAG_opt_forBB(BasicBlock* BB){
             std::set<GNode*> pa_set;
             pa_set = ValueToNode[instr->get_operand(0)]->fa;
             for(int i = 1 ; i < instr->num_ops_ ; i++){
-                std::set_intersection(pa_set.begin(),pa_set.end(),ValueToNode[instr->get_operand(i)]->fa.begin(),ValueToNode[instr->get_operand(i)]->fa.end(),pa_set.begin(),pa_set.end());//求交集
+                std::set<GNode*> sec;
+                std::set_intersection(pa_set.begin(),pa_set.end(),ValueToNode[instr->get_operand(i)]->fa.begin(),ValueToNode[instr->get_operand(i)]->fa.end(),std::inserter(sec,sec.begin()));//求交集
+                pa_set = sec;
             }
             bool isfind = false;
             if(pa_set.empty()) isfind = false;
